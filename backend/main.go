@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"solar-retro/backend/db"
 	"solar-retro/backend/handlers"
 
@@ -10,7 +11,14 @@ import (
 func main() {
 	db.Init()
 	r := GinRouter()
-	r.Run(":8080")
+
+	// Read PORT from environment, default to 8080
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	r.Run(":" + port)
 }
 
 func GinRouter() *gin.Engine {

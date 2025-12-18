@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"log"
+	"os"
 	"solar-retro/backend/models"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -13,16 +14,22 @@ import (
 )
 
 var svc *dynamodb.Client
-
-const TableName = "SolarRetroDecorations"
+var TableName string
 
 func Init() {
+	// Read table name from environment variable
+	TableName = os.Getenv("DYNAMODB_TABLE_NAME")
+	if TableName == "" {
+		TableName = "SolarRetroDecorations" // Local development default
+	}
+
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
 
 	svc = dynamodb.NewFromConfig(cfg)
+	log.Printf("DynamoDB initialized with table: %s", TableName)
 }
 
 // Simple in-memory fallback

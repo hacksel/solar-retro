@@ -50,7 +50,7 @@ function App() {
     if (view === 'login') return;
 
     // Load initial tree
-    fetch('http://localhost:8080/api/tree')
+    fetch('https://unforcible-theresa-undelaying.ngrok-free.dev/api/tree')
       .then(res => {
         if (!res.ok) throw new Error('Network response was not ok');
         return res.json();
@@ -68,7 +68,7 @@ function App() {
         setDecorations([]);
       });
 
-    const socket = new WebSocket(`ws://localhost:8080/ws?nickname=${encodeURIComponent(nickname)}&mood=${mood}&moodMessage=${encodeURIComponent(moodMessage)}`);
+    const socket = new WebSocket(`wss://unforcible-theresa-undelaying.ngrok-free.dev/ws?nickname=${encodeURIComponent(nickname)}&mood=${mood}&moodMessage=${encodeURIComponent(moodMessage)}`);
     socket.onmessage = (event) => {
       const msg = JSON.parse(event.data);
       if (msg.type === 'new_decoration') {
@@ -88,32 +88,6 @@ function App() {
     return () => socket.close();
   }, [view, nickname, mood, moodMessage]); // Re-run if view changes (or login details)
 
-  const handlePlaceDecoration = (x: number, y: number) => {
-    if (!activeType || !ws || !message.trim()) {
-      alert("Please select a decoration type and write a message!");
-      return;
-    }
-
-    const payload = {
-      action: "create",
-      decoration: {
-        type: activeType,
-        position: { x, y },
-        message,
-        author: nickname,
-        roomId: "default" // explicit room
-      }
-    };
-    ws.send(JSON.stringify(payload));
-
-    setMessage(''); // Reset message but keep type selected for rapid fire? Or reset type? 
-    // Let's keep type, reset message
-    setActiveType(null); // Actually reset type to force drag interaction again? 
-    // User flow: Drag -> Modal?? No, Drag -> Place.
-    // This function handles the CLICK placement or the DROP placement?
-    // It's called by ChristmasTree onPlaceDecoration (click) or onDropDecoration (drag).
-    // Let's keep it simple.
-  };
 
   const handleDropDecoration = (type: string, x: number, y: number) => {
     if (!ws) return;
@@ -211,8 +185,6 @@ function App() {
     ? decorations.filter(d => d.author === selectedUser)
     : decorations;
 
-  // Extract all unique authors for filter list
-  const allAuthors = Array.from(new Set(decorations.map(d => d.author))).sort();
 
   // Animation variants for specific parts of the UI
   const slideVariants = {
@@ -286,17 +258,13 @@ function App() {
             <span className="animate-bounce" style={{ animationDelay: '0.6s' }}>🎅</span>
           </div>
 
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-gray-200 max-w-2xl leading-relaxed">
-            Gather your team, choose your elf avatar, and share your thoughts on this festive retrospective journey!
-          </p>
 
           {/* Enter Button */}
           <button
             onClick={() => setView('login')}
             className="mt-8 group relative px-16 py-5 bg-gradient-to-r from-red-700 via-green-600 to-red-700 rounded-full shadow-[0_0_40px_rgba(220,38,38,0.6)] transition-all hover:shadow-[0_0_60px_rgba(220,38,38,0.9)] hover:scale-110 text-2xl font-bold uppercase tracking-widest border-3 border-yellow-400/60 animate-pulse cursor-pointer"
           >
-            <span className="relative z-10">Enter Workshop</span>
+            <span className="relative z-10">Entrer dans cette rétro</span>
             <span className="absolute -top-2 -right-2 flex h-4 w-4">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-4 w-4 bg-yellow-500"></span>
@@ -320,7 +288,7 @@ function App() {
           {/* Header & Nickname */}
           <div className="flex flex-col items-center gap-2 w-full max-w-2xl">
             <h1 className="text-2xl md:text-4xl text-yellow-400 font-bold drop-shadow-[0_0_25px_rgba(250,204,21,0.6)] text-center animate-pulse-slow leading-tight">
-              What kind of solar elf are you?
+              Quel Lutin Solar es tu aujourd'hui?
             </h1>
             <input
               type="text"
@@ -332,7 +300,7 @@ function App() {
           </div>
 
           {/* Huge Carousel */}
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full mt-6">
             {/* Prev Button */}
             <button
               onClick={() => {
@@ -402,7 +370,7 @@ function App() {
           <div className="flex flex-col items-center gap-3 w-full max-w-sm">
             <input
               type="text"
-              placeholder="Why are you feeling this way? (Optional)"
+              placeholder="Pourquoi ce choix en deux mots ? (Optionnel)"
               className="w-full bg-white/15 border border-white/20 rounded-full px-4 py-2 text-center text-white placeholder-gray-300 focus:ring-2 focus:ring-yellow-400 outline-none text-sm font-sans backdrop-blur-sm transition-all hover:bg-white/20"
               value={moodMessage}
               onChange={e => setMoodMessage(e.target.value)}
@@ -481,7 +449,7 @@ function App() {
 
 
           {/* Team Carousel */}
-          <div className="w-full flex flex-col items-center justify-center relative max-h-[350px]">
+          <div className="w-full flex flex-col items-center justify-center relative max-h-[350px] mt-12">
             {connectedUsers.length === 0 ? (
               <p className="text-gray-400">Waiting for team members...</p>
             ) : (

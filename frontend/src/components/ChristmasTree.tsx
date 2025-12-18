@@ -118,7 +118,7 @@ export const ChristmasTree: React.FC<ChristmasTreeProps> = ({
                                     }
                                 }}
 
-                                onPan={(e, info) => {
+                                onPan={(_, info) => {
                                     if (!isDragging || !svgRef.current) return;
                                     const rect = svgRef.current.getBoundingClientRect();
 
@@ -163,7 +163,6 @@ export const ChristmasTree: React.FC<ChristmasTreeProps> = ({
                                         href="/ornament-gold.png"
                                         x="-5" y="-5" width="10" height="10"
                                         className="drop-shadow-lg select-none"
-                                        draggable={false}
                                     />
                                 )}
                                 {d.type === 'black' && (
@@ -172,7 +171,6 @@ export const ChristmasTree: React.FC<ChristmasTreeProps> = ({
                                         x="-5" y="-5" width="10" height="10"
                                         // Specific white glow for black ball visibility
                                         className="drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] select-none"
-                                        draggable={false}
                                     />
                                 )}
                                 {d.type === 'gift' && (
@@ -180,7 +178,6 @@ export const ChristmasTree: React.FC<ChristmasTreeProps> = ({
                                         href="/gift-box.png"
                                         x="-6" y="-6" width="12" height="12"
                                         className="drop-shadow-lg select-none"
-                                        draggable={false}
                                     />
                                 )}
                                 {d.type === 'star' && (
@@ -188,7 +185,6 @@ export const ChristmasTree: React.FC<ChristmasTreeProps> = ({
                                         href="/star-topper.png"
                                         x="-6" y="-6" width="12" height="12"
                                         className="drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] select-none"
-                                        draggable={false}
                                     />
                                 )}
                             </motion.g>
