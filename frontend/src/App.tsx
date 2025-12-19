@@ -50,7 +50,11 @@ function App() {
     if (view === 'login') return;
 
     // Load initial tree
-    fetch('https://unforcible-theresa-undelaying.ngrok-free.dev/api/tree')
+    fetch('https://unforcible-theresa-undelaying.ngrok-free.dev/api/tree', {
+      headers: {
+        'ngrok-skip-browser-warning': '69420'
+      }
+    })
       .then(res => {
         if (!res.ok) throw new Error('Network response was not ok');
         return res.json();
